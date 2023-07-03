@@ -1,16 +1,29 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from todo import views
+from menu.views import CategoryViewSet, CommentViewSet, CartViewSet, UsersView, RegistrationAPI, LoginAPI, UserAPI
+from stylist.views import StylistView, ClientView
+from todo.views import TodoView, BookView
+from users.views import ArtistView, UserView, ProfileView, LogoutView
 
 router = routers.DefaultRouter()
-router.register(r'todo', views.TodoView, 'todo')
-router.register(r'book', views.BookView, 'book')
-router.register(r'comment', views.CommentViewSet)
-router.register(r'users', views.UserView, basename='user')
+router.register(r'todo', TodoView, 'todo')
+router.register(r'book', BookView, 'book')
+router.register(r'users', UsersView, basename='users')
+router.register(r'category', CategoryViewSet, 'category')
+router.register(r'comment', CommentViewSet, 'comment')
+router.register(r'cart', CartViewSet, 'cart')
+router.register(r'register', RegistrationAPI, 'register')
+router.register(r'artist', ArtistView, 'artist')
+router.register(r'user_log', UserView, basename='user')
+router.register(r'profile', ProfileView, 'profile')
+router.register(r'logout', LogoutView, 'logout')
+router.register(r'stylist', StylistView, 'stylist')
+router.register(r'client', ClientView, 'client')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('todo.urls')),
     path('api/', include(router.urls)),
+    path('api/auth/', include('knox.urls')),
 ]

@@ -1,0 +1,184 @@
+import {Button, Col, Container, Offcanvas, Row} from "react-bootstrap";
+import axios from "axios";
+import {useState} from "react";
+import {useEffect} from "react";
+import AddClient from "./add_client";
+import Form from "react-bootstrap/Form";
+import './index.css'
+
+const Stylist = () => {
+    const [show, setShow] = useState(false);
+    const [stylist, setStylist] = useState([]);
+    const [user, setUser] = useState('');
+    const [formData, setFormData] = useState({
+        id: '',
+        stylist: '',
+        name: '',
+        appoint_date: null,
+        appoint_time: null
+    });
+
+
+    useEffect(() => {
+        getStylist();
+        getUser();
+    }, []);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+    const getStylist = async () => {
+        try {
+            const response = await axios.get('/api/stylist/');
+            const data = response.data;
+            setUser(data[0].name);
+            setStylist(data);
+        } catch (error) {
+            console.error('Eroare:', error)
+        }
+    };
+    const getUser = async () => {
+        try {
+            const response = await axios.get('/api/user_log/');
+            const data = response.data;
+        } catch (error) {
+            console.error('Eroare:', error)
+        }
+    };
+    const startEditClient = (i, n, d, t) => {
+        setFormData({
+            id: i,
+            stylist: '',
+            name: n,
+            appoint_date: d,
+            appoint_time: t
+        });
+        handleShow();
+    };
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`/api/client/${id}/`);
+            handleClose();
+            getStylist();
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the client!');
+        }
+    };
+    const deleteAppoint = async () => {
+        setFormData((formData) => ({
+            ...formData,
+            appoint_date: null,
+            appoint_time: null,
+        }));
+        try {
+            await axios.put(`/api/client/${formData.id}/`, formData);
+        } catch (error) {
+            console.error('Error:', error.response.data);
+        }
+    };
+    const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await axios.put(`/api/client/${formData.id}/`, formData);
+        setFormData({
+            id: "",
+            stylist: '',
+            name: "",
+            appoint_date: null,
+            appoint_time: null
+        });
+        handleClose();
+        getStylist();
+
+    } catch (error) {
+      console.error('Error:', error.response.data);
+    }
+    };
+
+    return (
+        <div>
+            <Container>
+                <Row>
+                <h1 style={{color: 'coral'}}>{user}</h1>
+                    <AddClient />
+                </Row>
+                <hr />
+                <Row>
+                    <Col>
+                {stylist.map((sty) => (
+                    <div>
+                        <div className="p-1">
+                    {sty.clients.map((client) => (
+                        <a style={{cursor: 'pointer'}} onClick={() => startEditClient(client.id, client.name, client.appoint_date, client.appoint_time)}>
+                            <div style={{ color: client.appoint_date ? 'dodgerblue' : 'grey' }}>
+                        <p><strong>{client.name}</strong><br /><div className='p-1'>{client.appoint_date ? client.appoint_date : 'No rezervation'} | {client.appoint_time}</div></p>
+                            </div>
+                        </a>
+                    ))}
+                        </div>
+                    </div>
+                ))}
+                    </Col>
+                </Row>
+            </Container>
+            <Offcanvas show={show} onHide={handleClose}>
+        <Offcanvas.Header closeButton>
+        <Offcanvas.Title>{formData.name}</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+
+        <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3">
+          <Form.Label>Client name</Form.Label>
+          <Form.Control
+            size="lg"
+            type="text"
+            name="name"
+            onChange={handleChange}
+            value={formData.name}
+            placeholder="Client name"
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Appointment date</Form.Label>
+          <Form.Control
+            size="lg"
+            type="date"
+            name="appoint_date"
+            onChange={handleChange}
+            value={formData.appoint_date}
+            placeholder="Appointment date"
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Appointment time</Form.Label>
+          <Form.Control
+            size="lg"
+            type="time"
+            name="appoint_time"
+            onChange={handleChange}
+            value={formData.appoint_time}
+            placeholder="Appointment time"
+          />
+        </Form.Group>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Button type="submit" className="button">Save</Button>
+        <Button type='submit' className="button" onClick={deleteAppoint}>Cancel</Button>
+        <Button style={{marginLeft: 'auto'}} className="button bg-danger" onClick={() => handleDelete(formData.id)}>Delete client</Button>
+        </div>
+
+      </Form>
+
+        </Offcanvas.Body>
+        </Offcanvas>
+        </div>
+    )
+
+}
+
+export default Stylist;

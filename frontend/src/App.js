@@ -3,27 +3,20 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import AddBook from "./Book/add_book";
+import Menu from "./Menu/get_menu";
+import AddComment from "./Menu/add_comment";
+import AppLogin from "./Menu/login";
+import Artist from "./Artist/get_artist";
+import Stylist from "./Stylist/get_stylist";
+
 
 const App = message => {
-  const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [editNoteId, setEditNoteId] = useState(null);
   const [editNoteTitle, setEditNoteTitle] = useState('');
   const [editNoteContent, setEditNoteContent] = useState('');
 
-  const editNote = async (id, title, content) => {
-    try {
-      await axios.put(`/api/todo/${id}/`, {title, content });
-      setEditNoteId(null);
-      setEditNoteTitle('');
-      setEditNoteContent('');
-      getNotes();
-    } catch (error) {
-      console.error('Eroare:', error);
-      alert('A apărut o eroare la actualizarea notei!');
-    }
-  };
   const startEditNote = (id, title, content) => {
     setEditNoteId(id);
     setEditNoteTitle(title);
@@ -60,7 +53,6 @@ const App = message => {
     try {
       const response = await axios.get('/api/todo/');
       const data = response.data;
-      setNotes(data);
     } catch (error) {
       console.error('Eroare:', error);
     }
@@ -68,7 +60,7 @@ const App = message => {
 
 return (
   <Container className="mt-5">
-    <AddBook />
+    <Stylist />
   </Container>
 );
 

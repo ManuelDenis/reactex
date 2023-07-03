@@ -1,4 +1,4 @@
-import {useEffect, useState} from "@types/react";
+import {useEffect, useState} from "/react";
 import axios from "axios";
 
 const GetNotes = () => {

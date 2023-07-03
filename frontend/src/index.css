@@ -27,3 +27,11 @@ p, a, button {
 p {
   line-height: 1;
 }
+.button {
+  background: darkorchid;
+  border-radius: 7px;
+  border-style: none;
+  color: aliceblue;
+  font-family: Kanit, sans-serif;
+  margin: 2px;
+}

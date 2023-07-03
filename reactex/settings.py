@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-e4sz5nm&&6e$nqv(0qz9jg2037a)fp=5g5tb2@cmsw$6p6v5gi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -38,6 +38,10 @@ INSTALLED_APPS = [
     'todo.apps.TodoConfig',
     'corsheaders',
     'rest_framework',
+    'menu.apps.MenuConfig',
+    'knox',
+    'users.apps.UsersConfig',
+    'stylist.apps.StylistConfig',
 ]
 
 MIDDLEWARE = [
@@ -123,5 +127,12 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'frontend', 'build', 'static')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000'
+    'http://localhost:3000'
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
+
