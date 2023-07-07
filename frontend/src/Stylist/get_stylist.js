@@ -1,4 +1,4 @@
-import {Button, Col, Container, Offcanvas, Row} from "react-bootstrap";
+import {Button, Col, Container, Offcanvas, Row, Table} from "react-bootstrap";
 import axios from "axios";
 import {useState} from "react";
 import {useEffect} from "react";
@@ -9,6 +9,7 @@ import './index.css'
 const Stylist = () => {
     const [show, setShow] = useState(false);
     const [stylist, setStylist] = useState([]);
+    const [client, setClient] = useState([]);
     const [user, setUser] = useState('');
     const [formData, setFormData] = useState({
         id: '',
@@ -37,10 +38,12 @@ const Stylist = () => {
             const data = response.data;
             setUser(data[0].name);
             setStylist(data);
+            setClient(data[0]["clients"]);
         } catch (error) {
             console.error('Eroare:', error)
         }
     };
+
     const getUser = async () => {
         try {
             const response = await axios.get('/api/user_log/');
@@ -108,22 +111,31 @@ const Stylist = () => {
                     <AddClient />
                 </Row>
                 <hr />
+
+
                 <Row>
-                    <Col>
-                {stylist.map((sty) => (
-                    <div>
-                        <div className="p-1">
-                    {sty.clients.map((client) => (
-                        <a style={{cursor: 'pointer'}} onClick={() => startEditClient(client.id, client.name, client.appoint_date, client.appoint_time)}>
-                            <div style={{ color: client.appoint_date ? 'dodgerblue' : 'grey' }}>
-                        <p><strong>{client.name}</strong><br /><div className='p-1'>{client.appoint_date ? client.appoint_date : 'No rezervation'} | {client.appoint_time}</div></p>
-                            </div>
-                        </a>
-                    ))}
-                        </div>
-                    </div>
-                ))}
-                    </Col>
+                    <Table responsive>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Client Name</th>
+                            <th>Appointment date</th>
+                            <th>Appointment time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                                {client.map((clie) => (
+                                    <tr style={{cursor: 'pointer'}} onClick={() => startEditClient(clie.id, clie.name, clie.appoint_date, clie.appoint_time)}>
+                                    <td>{clie.id}</td>
+                                    <td className='fw-bolder text-capitalize'>{clie.name}</td>
+                                    <td>{clie.appoint_date}</td>
+                                    <td>{clie.appoint_time}</td>
+                                    </tr>
+                                ))}
+
+                        </tbody>
+                    </Table>
                 </Row>
             </Container>
             <Offcanvas show={show} onHide={handleClose}>

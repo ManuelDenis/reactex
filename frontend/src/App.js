@@ -8,6 +8,9 @@ import AddComment from "./Menu/add_comment";
 import AppLogin from "./Menu/login";
 import Artist from "./Artist/get_artist";
 import Stylist from "./Stylist/get_stylist";
+import Get_sportiv from "./Sport/get_sportiv";
+import NavbarEx from "./Navbar/navbar";
+import Get_stylist from "./Stylist/get_stylist";
 
 
 const App = message => {
@@ -60,7 +63,8 @@ const App = message => {
 
 return (
   <Container className="mt-5">
-    <Stylist />
+    <NavbarEx />
+    <Get_stylist />
   </Container>
 );
 
