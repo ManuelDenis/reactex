@@ -2,11 +2,16 @@ from django.contrib import admin
 from stylist.models import Client, Stylist, Loc, Judet
 
 
-class LocAdmin(admin.ModelAdmin):
-    list_display = ('name', 'jud')
-
-
 class JudetAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
+@admin.register(Loc)
+class LocAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
+class ClientAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
@@ -21,6 +26,5 @@ class StylistAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Stylist, StylistAdmin)
-admin.site.register(Client)
+admin.site.register(Client, ClientAdmin)
 admin.site.register(Judet, JudetAdmin)
-admin.site.register(Loc, LocAdmin)

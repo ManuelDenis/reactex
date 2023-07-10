@@ -11,7 +11,7 @@ class Judet(models.Model):
 
 class Loc(models.Model):
     name = models.CharField(max_length=50)
-    jud = models.ForeignKey(Judet, on_delete=models.CASCADE, related_name='loc')
+    jud = models.ForeignKey(Judet, on_delete=models.CASCADE, related_name='local')
 
     def __str__(self):
         return self.name
@@ -28,7 +28,8 @@ class Stylist(models.Model):
 class Client(models.Model):
     stylist = models.ForeignKey(Stylist, on_delete=models.CASCADE, related_name='clients', null=True, blank=True)
     name = models.CharField(max_length=30)
-    loc = models.ForeignKey(Loc, on_delete=models.DO_NOTHING, null=True, blank=True)
+    jud = models.CharField(max_length=30, null=True, blank=True)
+    loc = models.CharField(max_length=50, null=True, blank=True)
     appoint_date = models.DateField(null=True, blank=True)
     appoint_time = models.TimeField(null=True, blank=True)
 

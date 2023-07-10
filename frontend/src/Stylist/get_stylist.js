@@ -16,7 +16,8 @@ const Stylist = () => {
         stylist: '',
         name: '',
         appoint_date: null,
-        appoint_time: null
+        appoint_time: null,
+        loc: ''
     });
 
 
@@ -52,13 +53,14 @@ const Stylist = () => {
             console.error('Eroare:', error)
         }
     };
-    const startEditClient = (i, n, d, t) => {
+    const startEditClient = (i, n, d, t, l) => {
         setFormData({
             id: i,
             stylist: '',
             name: n,
             appoint_date: d,
-            appoint_time: t
+            appoint_time: t,
+            loc: l,
         });
         handleShow();
     };
@@ -93,7 +95,8 @@ const Stylist = () => {
             stylist: '',
             name: "",
             appoint_date: null,
-            appoint_time: null
+            appoint_time: null,
+            loc: ""
         });
         handleClose();
         getStylist();
@@ -121,16 +124,19 @@ const Stylist = () => {
                             <th>Client Name</th>
                             <th>Appointment date</th>
                             <th>Appointment time</th>
+                            <th>Localitate</th>
                         </tr>
                         </thead>
                         <tbody>
 
                                 {client.map((clie) => (
-                                    <tr style={{cursor: 'pointer'}} onClick={() => startEditClient(clie.id, clie.name, clie.appoint_date, clie.appoint_time)}>
+                                    <tr style={{cursor: 'pointer'}} onClick={() => startEditClient(clie.id, clie.name, clie.appoint_date, clie.appoint_time, clie.loc)}>
                                     <td>{clie.id}</td>
                                     <td className='fw-bolder text-capitalize'>{clie.name}</td>
                                     <td>{clie.appoint_date}</td>
                                     <td>{clie.appoint_time}</td>
+                                    <td>{clie.loc}</td>
+
                                     </tr>
                                 ))}
 

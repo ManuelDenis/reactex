@@ -5,7 +5,7 @@ from django.urls import path, include
 from rest_framework import routers
 from menu.views import CategoryViewSet, CommentViewSet, CartViewSet, UsersView, RegistrationAPI, LoginAPI, UserAPI
 from sport.views import SportivView
-from stylist.views import StylistView, ClientView
+from stylist.views import StylistView, ClientView, LocView
 from todo.views import TodoView, BookView
 from users.views import ArtistView, UserView, ProfileView, LogoutView
 
@@ -23,6 +23,7 @@ router.register(r'profile', ProfileView, 'profile')
 router.register(r'logout', LogoutView, 'logout')
 router.register(r'stylist', StylistView, 'stylist')
 router.register(r'client', ClientView, 'client')
+router.register(r'loc', LocView, 'loc')
 router.register(r'sport', SportivView, 'sport')
 
 urlpatterns = [
