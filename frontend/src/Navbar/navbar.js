@@ -5,6 +5,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 
 function BasicExample() {
   return (
+      <Container>
     <Navbar expand="lg" className="navbar-info bg-info">
       <Container>
         <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
@@ -31,6 +32,7 @@ function BasicExample() {
         </Navbar.Collapse>
       </Container>
     </Navbar>
+      </Container>
   );
 }
 

@@ -10,18 +10,16 @@ class LocSerializer(serializers.ModelSerializer):
 
 
 class JudetSerializer(serializers.ModelSerializer):
-    local = LocSerializer(many=True, read_only=True)
-
     class Meta:
         model = Judet
-        fields = ('id', 'name', 'local')
+        fields = ('id', 'name')
 
 
 class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ('id', 'stylist', 'name', 'appoint_date', 'appoint_time', 'loc')
+        fields = ('id', 'stylist', 'name', 'appoint_date', 'appoint_time', 'jud', 'loc')
 
 
 class StylistSerializer(serializers.ModelSerializer):

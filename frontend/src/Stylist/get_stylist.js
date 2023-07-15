@@ -1,10 +1,11 @@
-import {Button, Col, Container, Offcanvas, Row, Table} from "react-bootstrap";
+import {Button, Container, Offcanvas, Row, Table} from "react-bootstrap";
 import axios from "axios";
-import {useState} from "react";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import AddClient from "./add_client";
 import Form from "react-bootstrap/Form";
-import './index.css'
+import {Country, City, State} from 'country-state-city';
+import './index.css';
+import Select from 'react-select';
 
 const Stylist = () => {
     const [show, setShow] = useState(false);
@@ -17,14 +18,67 @@ const Stylist = () => {
         name: '',
         appoint_date: null,
         appoint_time: null,
+        jud: '',
         loc: ''
     });
-
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [selectedState, setSelectedState] = useState(null);
 
     useEffect(() => {
+        console.log(selectedCountry);
+        console.log(selectedCountry?.isoCode);
+        console.log(State?.getStatesOfCountry(selectedCountry?.isoCode));
         getStylist();
         getUser();
-    }, []);
+    }, ['RO']);
+    const convertState = (stateName) => {
+        const stateMap = {
+  'Alba': 'AB',
+  'Arad': 'AR',
+  'Argeș': 'AG',
+  'Bacău': 'BC',
+  'Bihor': 'BH',
+  'Bistrița-Năsăud': 'BN',
+  'Botoșani': 'BT',
+  'Brăila': 'BR',
+  'Brașov': 'BV',
+  'Buzău': 'BZ',
+            'Bucharest': 'B',
+  'Călărași': 'CL',
+  'Caraș-Severin': 'CS',
+  'Cluj': 'CJ',
+  'Constanța': 'CT',
+  'Covasna': 'CV',
+  'Dâmbovița': 'DB',
+  'Dolj': 'DJ',
+  'Galați': 'GL',
+  'Giurgiu': 'GR',
+  'Gorj': 'GJ',
+  'Harghita': 'HR',
+  'Hunedoara': 'HD',
+  'Ialomița': 'IL',
+  'Iași': 'IS',
+  'Ilfov': 'IF',
+  'Maramureș': 'MM',
+  'Mehedinți': 'MH',
+  'Mureș': 'MS',
+  'Neamț': 'NT',
+  'Olt': 'OT',
+  'Prahova': 'PH',
+  'Satu Mare': 'SM',
+  'Sălaj': 'SJ',
+  'Sibiu': 'SB',
+  'Suceava': 'SV',
+  'Teleorman': 'TR',
+  'Timiș': 'TM',
+  'Tulcea': 'TL',
+  'Vâlcea': 'VL',
+  'Vaslui': 'VS',
+  'Vrancea': 'VN'
+};
+     return stateMap[stateName.split(' County')[0]] || '';
+    };
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleChange = (e) => {
@@ -33,6 +87,20 @@ const Stylist = () => {
       [e.target.name]: e.target.value
     });
   };
+    const handleJudChange = (e) => {
+       setFormData({
+       ...formData,
+       jud: e.target.value
+       });
+       setSelectedState(convertState(e.target.value));
+    };
+    const handleLocChange = (e) => {
+       setFormData({
+       ...formData,
+       loc: e.target.value
+       });
+    };
+
     const getStylist = async () => {
         try {
             const response = await axios.get('/api/stylist/');
@@ -44,7 +112,6 @@ const Stylist = () => {
             console.error('Eroare:', error)
         }
     };
-
     const getUser = async () => {
         try {
             const response = await axios.get('/api/user_log/');
@@ -53,13 +120,14 @@ const Stylist = () => {
             console.error('Eroare:', error)
         }
     };
-    const startEditClient = (i, n, d, t, l) => {
+    const startEditClient = (i, n, d, t, j, l) => {
         setFormData({
             id: i,
             stylist: '',
             name: n,
             appoint_date: d,
             appoint_time: t,
+            jud: j,
             loc: l,
         });
         handleShow();
@@ -88,6 +156,11 @@ const Stylist = () => {
     };
     const handleSubmit = async (event) => {
     event.preventDefault();
+       setFormData({
+       ...formData,
+       jud: selectedState
+       });
+
     try {
       await axios.put(`/api/client/${formData.id}/`, formData);
         setFormData({
@@ -96,6 +169,7 @@ const Stylist = () => {
             name: "",
             appoint_date: null,
             appoint_time: null,
+            jud: "",
             loc: ""
         });
         handleClose();
@@ -124,18 +198,18 @@ const Stylist = () => {
                             <th>Client Name</th>
                             <th>Appointment date</th>
                             <th>Appointment time</th>
-                            <th>Localitate</th>
+                            <th>Jud/Localitate</th>
                         </tr>
                         </thead>
                         <tbody>
 
                                 {client.map((clie) => (
-                                    <tr style={{cursor: 'pointer'}} onClick={() => startEditClient(clie.id, clie.name, clie.appoint_date, clie.appoint_time, clie.loc)}>
+                                    <tr style={{cursor: 'pointer'}} onClick={() => startEditClient(clie.id, clie.name, clie.appoint_date, clie.appoint_time, clie.jud, clie.loc)}>
                                     <td>{clie.id}</td>
                                     <td className='fw-bolder text-capitalize'>{clie.name}</td>
                                     <td>{clie.appoint_date}</td>
                                     <td>{clie.appoint_time}</td>
-                                    <td>{clie.loc}</td>
+                                        <td><strong>{clie.loc}</strong> | <small>{clie.jud}</small></td>
 
                                     </tr>
                                 ))}
@@ -184,6 +258,35 @@ const Stylist = () => {
             placeholder="Appointment time"
           />
         </Form.Group>
+
+      <Form.Group>
+        <Form.Label>Judet</Form.Label>
+        <Form.Control
+          as="select"
+          value={formData.jud}
+          onChange={handleJudChange}
+        >
+          <option value="">Alege o opțiune</option>
+          {State.getStatesOfCountry('RO').map((option) => (
+            <option key={option.value} value={option.value}>{option.name}</option>
+          ))}
+        </Form.Control>
+      </Form.Group>
+      <Form.Group>
+        <Form.Label>Localitate</Form.Label>
+        <Form.Control
+          as="select"
+          value={formData.loc}
+          onChange={handleLocChange}
+        >
+          <option value="">Alege o opțiune</option>
+          {City.getCitiesOfState('RO', selectedState).map((option) => (
+            <option key={option.value} value={option.value}>{option.name}</option>
+          ))}
+        </Form.Control>
+      </Form.Group>
+
+
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button type="submit" className="button">Save</Button>
         <Button type='submit' className="button" onClick={deleteAppoint}>Cancel</Button>
